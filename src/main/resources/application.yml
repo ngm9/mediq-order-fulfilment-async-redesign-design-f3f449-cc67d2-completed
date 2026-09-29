@@ -1,0 +1,46 @@
+server:
+  port: 8080
+  tomcat:
+    threads:
+      max: 400
+      min-spare: 40
+
+spring:
+  application:
+    name: order-monolith
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:pharmacy}
+    username: ${DB_USER:pharmacy}
+    password: ${DB_PASSWORD:pharmacy}
+    hikari:
+      maximum-pool-size: 40
+      connection-timeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+
+pharmacy:
+  upload-dir: ${RX_UPLOAD_DIR:/var/lib/pharmacy/rx}
+  payment:
+    base-url: ${PAYMENT_API_URL:http://payment-gateway.internal}
+    timeout-ms: 8000
+  insurer:
+    base-url: ${INSURER_API_URL:http://insurer-claims.external}
+    timeout-ms: 15000
+  courier:
+    base-url: ${COURIER_API_URL:http://courier-booking.external}
+    timeout-ms: 30000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+logging:
+  level:
+    com.medix.orders: INFO
